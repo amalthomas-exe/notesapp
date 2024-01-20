@@ -10,7 +10,7 @@ import noteContext from "../context/noteContext";
 import { ScrollView } from 'react-native-gesture-handler'
 
 const AddNotePage = ({ navigation, route }) => {
-  const { notes, setNotes, setRefreshing, colors } = useContext(noteContext);
+  const { notes, setNotes, setRefreshing, colors, setMasterNotes, masterNotes } = useContext(noteContext);
   const [CurrentNote, setCurrentNote] = useState({
     title: '',
     content: '',
@@ -23,10 +23,21 @@ const AddNotePage = ({ navigation, route }) => {
     }
   }, [route.params?.note])
 
-  const [bottomSheetVisible, setBottomSheetVisible] = useState(false)
+  const [bottomSheetVisible, setBottomSheetVisible] = useState(true)
   const [pageColor, setPageColor] = useState('rgba(255, 255, 255, 0)')
   const bottomSheetRef = useRef();
   const snapPoints = useMemo(() => ['55%'], []);
+  //const [isMounted,setIsMounted] = useState(false);
+
+  // useEffect(() => {
+  //   if(isMounted){
+  //     setBottomSheetVisible(true)
+  //     console.log("bottomSheetVisible")
+  //   }
+  //   else{
+  //     setIsMounted(true);
+  //   }
+  // }, [isMounted])
 
   const handleAddEditnote = async () => {
     try {
@@ -38,9 +49,13 @@ const AddNotePage = ({ navigation, route }) => {
           updated_at: dateTime,
         });
         const editNotes = notes;
+        const masterEditNotes = masterNotes;
         const index = editNotes.findIndex((note) => note.id === CurrentNote.id);
+        const masterIndex = masterEditNotes.findIndex((note) => note.id === CurrentNote.id);
         editNotes[index] = { ...CurrentNote, updated_at: dateTime };
+        masterEditNotes[masterIndex] = { ...CurrentNote, updated_at: dateTime };
         setNotes(editNotes);
+        setMasterNotes(masterEditNotes);
         setRefreshing(true);
         return
       }
@@ -50,8 +65,8 @@ const AddNotePage = ({ navigation, route }) => {
         updated_at: dateTime,
       });
       const id = result[0].insertId;
-      setNotes([...notes, { id, ...CurrentNote, created_at: dateTime, updated_at: dateTime }]);
-
+      setNotes([{ id, ...CurrentNote, created_at: dateTime, updated_at: dateTime }, ...notes]);
+      setMasterNotes([{ id, ...CurrentNote, created_at: dateTime, updated_at: dateTime }, ...notes]);
     }
     catch (e) {
       console.log(e);
@@ -62,7 +77,6 @@ const AddNotePage = ({ navigation, route }) => {
     props => (<BottomSheetBackdrop
       {...props}
       onPress={() => {
-        setBottomSheetVisible(false)
         bottomSheetRef.current.close()
       }
       }
@@ -85,7 +99,7 @@ const AddNotePage = ({ navigation, route }) => {
     }}>
 
 
-      <BottomSheet
+      {bottomSheetVisible && <BottomSheet
         ref={bottomSheetRef}
         snapPoints={snapPoints}
         enablePanDownToClose={true}
@@ -127,11 +141,11 @@ const AddNotePage = ({ navigation, route }) => {
                     width: 35,
                     height: 35,
                     borderRadius: 10,
-                    backgroundColor: `rgba(${color.red}, ${color.green}, ${color.blue}, 1)`,
+                    backgroundColor: color,
                     marginRight: 20,
                   }}
                     onPress={() => {
-                      setPageColor(`rgba(${color.red}, ${color.green}, ${color.blue}, 0.3)`)
+                      setPageColor(color)
                     }}
                     key={index}
                   />
@@ -191,7 +205,7 @@ const AddNotePage = ({ navigation, route }) => {
             </View>
           </View>
         </View>}
-      </BottomSheet>
+      </BottomSheet>}
       <View style={{
         display: 'flex',
         flexDirection: 'row',

@@ -1,32 +1,41 @@
-import React from 'react';
-import {View,Text,StyleSheet} from 'react-native';
+import React,{useContext,memo} from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import noteContext from '../context/noteContext';
 
-const NavBagde = ({label,highlighted}) => {
+const NavBagde = ({ label, highlighted,onPress,index }) => {
+    const {setCurrentTab} = useContext(noteContext);
     return (
-        <View style={highlighted ? styles.highlightedBadgeStyle : styles.normalBadgeStyle}>
-            <Text style={highlighted ? styles.highlightedBadgeText : styles.normalBadgeText}>
-                {label}
-            </Text>
-        </View>
+            <TouchableOpacity 
+                style={highlighted ? styles.highlightedBadgeStyle : styles.normalBadgeStyle}
+                onPress={()=>{
+                    onPress()
+                    setCurrentTab(index);
+                }}
+            >
+                <Text style={highlighted ? styles.highlightedBadgeText : styles.normalBadgeText}>
+                    {label}
+                </Text>
+            </TouchableOpacity>
     )
 }
 
 const styles = StyleSheet.create({
-    highlightedBadgeStyle:{
+    highlightedBadgeStyle: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'rgba(78, 78, 78, 1)',
-        borderStyle:'solid',
-        borderWidth:1,
-        borderColor:"rgba(78, 78, 78, 1)",
+        borderStyle: 'solid',
+        borderWidth: 1,
+        borderColor: "rgba(78, 78, 78, 1)",
         borderRadius: 10,
         paddingHorizontal: 10,
         paddingVertical: 5,
         marginRight: 10
     },
-    normalBadgeStyle:{
+    normalBadgeStyle: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -49,4 +58,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default NavBagde
+export default memo(NavBagde)

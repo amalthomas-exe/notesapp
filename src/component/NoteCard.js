@@ -1,34 +1,104 @@
-import React, { memo, useContext } from 'react'
+import React, { memo, useContext,useState,useRef, useEffect } from 'react'
 import { View, Text, TouchableOpacity, Pressable, TouchableNativeFeedback, Dimensions } from 'react-native'
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { getDBConnection, deleteNote } from '../services/db-service';
+import { getDBConnection, deleteNote,addLikedNote, deleteLikedNote } from '../services/db-service';
 import noteContext from '../context/noteContext';
-import Animated, { useSharedValue, withTiming, withSpring, Easing, ReduceMotion, SlideInRight, Layout, ZoomIn, ZoomOut } from 'react-native-reanimated';
+import Animated, { useSharedValue, withTiming, withSpring, Easing, ReduceMotion, SlideInRight, SharedTransition, ZoomIn, ZoomOut } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
 
-
-
-
-const NoteCard = ({ note, index }) => {
+const NoteCard = ({
+    note,
+    index,
+    openContextMenu,
+    closeContextMenu,
+}) => {
     const ScreenWidth = Dimensions.get("window").width;
-    const { id, title, content, category, updated_at } = note;
-    const { notes, setNotes,colors } = useContext(noteContext);
+    const { id, title, content, category, updated_at,isLiked } = note;
+    const { notes, setNotes, colors,currentTab ,setRefreshing,masterNotes,setMasterNotes} = useContext(noteContext);
+    const [liked, setLiked] = useState(isLiked==1);
+    const isMounted = useRef(false);
     const navigation = useNavigation();
-    console.log(note)
+
+    useEffect(()=>{
+        if(isMounted.current ){
+            console.log("Liked changed")
+            handleLikedNote(id)
+        }
+        else{
+            isMounted.current=true;
+        }
+    },[liked])
 
     const handleDeleteNote = async (id) => {
-        //  const db = await getDBConnection();
-        //  const result = await deleteNote(db, "notes", id);
-        //  console.log(result);
+        const db = await getDBConnection();
+        //const result = await deleteNote(db, "notes", id);
+        //console.log(result);
         const newNotes = notes.filter((note) => note.id !== id);
-        // marginLeft.value = withTiming(marginLeft.value + ScreenWidth, {
-        //     duration: 200,
-        //     easing: Easing.inOut(Easing.quad),
-        //     reduceMotion: ReduceMotion.System,
-        //   },()=>{
-        //         runOnJS(setNotes)(newNotes);
-        //   })
+        const masterNewNotes = masterNotes.filter((note) => note.id !== id);
         setNotes(newNotes);
+        setMasterNotes(masterNewNotes);
+    }
+    
+    const handleLikedNote = async (id) => {
+        const db = await getDBConnection();
+        if(!liked){
+            await deleteLikedNote(db, "notes", id);
+            if(currentTab==1){
+                const newNotes = notes.filter((note) => note.id !== id);
+                const masterNewNotes = masterNotes.map((note) => {
+                    if(note.id==id){
+                        note.isLiked=0;
+                    }
+                    return note;
+                });
+                setNotes(newNotes);
+                setMasterNotes(masterNewNotes);
+                return;
+            }
+            else{
+                const newNotes = notes.map((note) => {
+                    if(note.id==id){
+                        note.isLiked=0;
+                    }
+                    return note;
+                });
+                const masterNewNotes = masterNotes.map((note) => {
+                    if(note.id==id){
+                        note.isLiked=0;
+                    }
+                    return note;
+                });
+                setNotes(newNotes);
+                setMasterNotes(masterNewNotes);
+                return;
+            }
+        }else{
+            await addLikedNote(db, "notes", id);
+            const newNotes = notes.map((note) => {
+                if(note.id==id){
+                    note.isLiked=1;
+                }
+                return note;
+            });
+            const masterNewNotes = masterNotes.map((note) => {
+                if(note.id==id){
+                    note.isLiked=1;
+                }
+                return note;
+            });
+            setNotes(newNotes);
+            setMasterNotes(masterNewNotes);
+            return;
+        }
+        
+    }
+
+    //function to reduce a string to only 50 characters and trailing with ...
+    const reduceString = (str) => {
+        if (str.length > 50) {
+            return str.slice(0, 50) + "...";
+        }
+        return str;
     }
 
     const convertDateTimeToUndertsandable = (date) => {
@@ -38,7 +108,7 @@ const NoteCard = ({ note, index }) => {
         const day = d.getDate();
         const hour = (d.getHours() > 12) ? d.getHours() - 12 : d.getHours();
         const minute = d.getMinutes();
-        return `${day}/${month}/${year} at ${hour}:${minute} ${d.getHours() > 12 ? "PM" : "AM"}`;
+        return `${day}/${month}/${year} at ${((hour < 10)?"0":"")+hour}:${((minute < 10)?"0":"")+minute} ${d.getHours() >= 12 ? "PM" : "AM"}`;
     }
 
     return (
@@ -48,28 +118,24 @@ const NoteCard = ({ note, index }) => {
             }}
             onLongPress={() => {
                 console.log("Long pressed")
+                navigation.navigate("OpenContextMenuModal", { note: note, index: index })
+                openContextMenu();
+
             }}
-            background={TouchableNativeFeedback.Ripple(
-                `rgba(${colors[index % colors.length].red}, ${colors[index % colors.length].green}, ${colors[index % colors.length].blue}, 0.2)`,
-                false
-            )
-            
-            }
         >
             <Animated.View style={{
-                marginTop: 15,
+                elevation: 2,
+                position: 'relative',
                 display: 'flex',
                 minHeight: 200,
-                width: '95%',
+                width: '90%',
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 zIndex: 0,
                 padding: 20,
-                borderRadius: 20,
-                backgroundColor: `rgba(${colors[index % colors.length].red}, ${colors[index % colors.length].green}, ${colors[index % colors.length].blue}, 0.4)`,
+                borderRadius: 15,
+                backgroundColor: colors[id % colors.length]
             }}
-                entering={ZoomIn.delay(index * 75)}
-                exiting={ZoomOut.duration(200)}
             >
                 <View style={{
                     flexDirection: 'column',
@@ -85,7 +151,7 @@ const NoteCard = ({ note, index }) => {
                             fontWeight: '800',
                             color: "rgba(80, 80, 80, 1)"
                         }}>
-                            {category + index}
+                            {category + index + id}
                         </Text>
                         <Text style={{
                             fontSize: 22,
@@ -100,10 +166,7 @@ const NoteCard = ({ note, index }) => {
                             marginTop: 5,
                             color: "rgba(60, 60, 60, 1)",
                         }}>
-                            {content}
-                            {colors[index % colors.length].red+" "}
-                            {colors[index % colors.length].green+" "}
-                            {colors[index % colors.length].blue+" "}
+                            {reduceString(content) + " "}
                         </Text>
                     </View>
                     <View style={{
@@ -124,7 +187,7 @@ const NoteCard = ({ note, index }) => {
                             color: "rgba(60, 60, 60, 1)",
                             fontWeight: '600'
                         }}>
-                            {convertDateTimeToUndertsandable(updated_at)}
+                            {convertDateTimeToUndertsandable(updated_at) + isLiked}
                         </Text>
                     </View>
                 </View>
@@ -139,7 +202,7 @@ const NoteCard = ({ note, index }) => {
                         alignItems: 'center',
                     }}
                     >
-                        <View style={{
+                        <TouchableOpacity style={{
                             padding: 10,
                             backgroundColor: "#fff",
                             display: 'flex',
@@ -149,9 +212,13 @@ const NoteCard = ({ note, index }) => {
                             borderRadius: 50,
                             elevation: 10,
                             marginBottom: 8
-                        }}>
-                            <AntDesign name="hearto" size={20} color="black" />
-                        </View>
+                        }}
+                        onPress={()=>{
+                            setLiked(!liked);
+                        }}
+                        >
+                            {liked?<AntDesign name="heart" size={20} color="red" />:<AntDesign name="hearto" size={20} color="black" />}
+                        </TouchableOpacity>
                         <TouchableOpacity style={{
                             padding: 10,
                             backgroundColor: "#fff",
@@ -170,9 +237,8 @@ const NoteCard = ({ note, index }) => {
                         </TouchableOpacity>
                     </View>
                     <View style={{
-                        backgroundColor: `rgba(${colors[index % colors.length].red}, ${colors[index % colors.length].green}, ${colors[index % colors.length].blue}, 1)`,
+                        backgroundColor: `rgba(40,40,40,0.2)`,
                         width: 50,
-                        elevation: 10,
                         height: 50,
                         display: 'flex',
                         flexDirection: 'column',

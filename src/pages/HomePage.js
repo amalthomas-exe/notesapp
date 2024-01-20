@@ -1,54 +1,104 @@
-import React, { useEffect, useCallback, useState, useContext } from 'react'
+import React, { useEffect, useCallback, useState, useContext, memo } from 'react'
 import noteContext from "../context/noteContext";
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
-import Animated,{LinearTransition} from 'react-native-reanimated';
-import { FlashList } from '@shopify/flash-list'
+import Animated, { LinearTransition } from 'react-native-reanimated';
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import { getDBConnection, getNotes, createTable } from '../services/db-service'
+import { getDBConnection, getNotes, createTable, createLikedNotesTable, getLikedNotes } from '../services/db-service'
 import NavBadge from '../component/NavBagde'
-import NoteCard from '../component/NoteCard'
+import NoteCardContainer from '../component/NoteCardContainer';
+import { FlashList } from '@shopify/flash-list';
 import { FlatList } from 'react-native-gesture-handler';
 
 
 const HomePage = ({ navigation }) => {
-    const { notes, setNotes,refreshing,setRefreshing } = useContext(noteContext);
+    const { notes, setNotes, refreshing, setRefreshing,currentTab ,masterNotes,setMasterNotes} = useContext(noteContext);
     console.log("Home built")
+    const navItems = [
+        {
+            label: "All",
+            onPress: () => {
+                loadAllNotes();
+            }
+        },
+        {
+            label: "Favourite",
+            onPress: () => {
+                loadLikedNotes();
+            }
+        },
+        {
+            label: "To-do",
+            onPress: () => {
+                setNotes([])
+            }
+        },
+        {
+            label: "Ideas",
+            onPress: () => {setNotes([])}
+        },
+        {
+            label: "Others",
+            onPress: () => {setNotes([])}
+        }
+    ]
     const loaddDataCallBack = useCallback(async () => {
-        try {
+        if(currentTab==0){
+            try {
             const db = await getDBConnection();
             await createTable(db, "notes");
             const notes = await getNotes(db, "notes");
             if (notes.length) {
                 setNotes(notes);
+                setMasterNotes(notes);
             }
             else {
                 console.log("no notes saved")
             }
         } catch (e) {
             console.log("Error from useState", e);
-        }
+        }}
     }, [])
 
     useEffect(() => {
         loaddDataCallBack();
+        console.log("Home mounted")
     }, [loaddDataCallBack])
 
-    useEffect(()=>{
-        if(refreshing){
+    useEffect(() => {
+        if (refreshing) {
+            console.log("Refreshing")
             setNotes(notes);
             setRefreshing(false)
         }
-    },[refreshing])
+    }, [refreshing])
+
+    const loadAllNotes = useCallback(async () => {
+        try{
+            setNotes(masterNotes)
+        }catch(e){
+            console.log("Error from loadAllNotes",e)
+        }
+    },[masterNotes])
+
+    const loadLikedNotes = useCallback(async () => {
+         try{
+             const likedNotes = masterNotes.filter((note)=>note.isLiked==1);
+             console.log("Liked notes",likedNotes.length,likedNotes)
+             setNotes(likedNotes);
+         }catch(e){
+             console.log("Error from loadLikedNotes",e)
+         }
+    },[notes])
 
     return (
         <View style={{
             flex: 1,
-            backgroundColor: '#fff',
+            backgroundColor: 'rgba(230, 228, 228, 1)',
             paddingTop: 40,
         }}>
             <View style={{
                 paddingHorizontal: 20,
-            
+
             }}>
                 <Text style={{
                     fontSize: 30,
@@ -91,18 +141,17 @@ const HomePage = ({ navigation }) => {
                     marginTop: 10
                 }}>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                        <NavBadge label="All" highlighted={true} />
-                        <NavBadge label="Favourite" highlighted={false} />
-                        <NavBadge label="To-do" highlighted={false} />
-                        <NavBadge label="Ideas" highlighted={false} />
-                        <NavBadge label="Others" highlighted={false} />
+                        {
+                            navItems.map((item, index) => {
+                                return <NavBadge label={item.label} highlighted={(currentTab==(index))} onPress={item.onPress} key={index} index={index}/>
+                            })
+                        }
                     </ScrollView>
                 </View>
             </View>
             <View style={{
                 marginTop: 10,
                 height: '100%',
-                paddingLeft: 20,
             }}>{
                     notes.length == 0 ? <View style={{
                         display: 'flex',
@@ -117,13 +166,11 @@ const HomePage = ({ navigation }) => {
                             color: 'rgba(60, 60, 60, 1)',
                         }}>No notes</Text>
                     </View> :
-                        <Animated.FlatList
+                        <FlatList
                             //itemLayoutAnimation={LinearTransition.duration(400)}
-                            estimatedItemSize={200}
-                            itemLayoutAnimation={LinearTransition.duration(400)}
                             data={notes}
-                            renderItem={({ item,index }) => <View>
-                                <NoteCard note={item} index={index}/>
+                            renderItem={({ item, index }) => <View>
+                                <NoteCardContainer note={item} index={index} />
                                 {(notes.indexOf(item) == notes.length - 1) ? <View style={{
                                     height: 200,
                                 }} /> : null}
@@ -186,4 +233,4 @@ const HomePage = ({ navigation }) => {
     )
 }
 
-export default HomePage
+export default (HomePage)

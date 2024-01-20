@@ -13,7 +13,6 @@ export const sayHello = ()=>{
 }
 
 export const createTable = async (db,tableName)=>{
-    console.log('createTable');
     const query = `CREATE TABLE IF NOT EXISTS ${tableName}(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT,
@@ -21,10 +20,11 @@ export const createTable = async (db,tableName)=>{
         category TEXT,
         status TEXT DEFAULT 'saved',
         created_at DATETIME,
-        updated_at DATETIME
+        updated_at DATETIME,
+        isLiked INTEGER DEFAULT 0
     )`;
-
     await db.executeSql(query);
+    console.log('createTable');
 }
 
 export const getNotes = async (db,tableName)=>{
@@ -32,8 +32,24 @@ export const getNotes = async (db,tableName)=>{
     try{
         const notes = [];
         const results = await db.executeSql(`
-        SELECT * FROM ${tableName}`);
-        console.log(results);
+        SELECT * FROM ${tableName} order by created_at desc`);
+        results.forEach(result=>{
+            for(let i = 0;i<result.rows.length;i++){
+                notes.push(result.rows.item(i));
+            }
+        });
+        return notes;
+    }catch(e){
+        console.log(e);
+    }
+}
+
+export const getLikedNotes = async (db,tableName)=>{
+    console.log('getLikedNotes');
+    try{
+        const notes = [];
+        const results = await db.executeSql(`
+        SELECT * FROM ${tableName} WHERE isLiked=1 order by created_at desc`);
         results.forEach(result=>{
             for(let i = 0;i<result.rows.length;i++){
                 notes.push(result.rows.item(i));
@@ -51,6 +67,29 @@ export const addNote = async (db,tableName,note)=>{
     try{
         const query = `INSERT INTO ${tableName}(title,content,category,created_at,updated_at) VALUES(?,?,?,?,?)`;
         const results = await db.executeSql(query,[note.title,note.content,note.category,note.created_at,note.updated_at]);
+        return results;
+    }catch(e){
+        console.log(e);
+    }
+}
+
+export const addLikedNote = async (db,tableName,id)=>{
+    console.log('addLikedNote');
+    try{
+        const query = `UPDATE ${tableName} set isLiked=1 WHERE id=?`;
+        const results = await db.executeSql(query,[id]);
+        return results;
+    }catch(e){
+        console.log(e);
+    }
+
+}
+
+export const deleteLikedNote = async (db,tableName,id)=>{
+    console.log('deleteLikedNote');
+    try{
+        const query = `UPDATE ${tableName} set isLiked=0 WHERE id=?`;
+        const results = await db.executeSql(query,[id]);
         return results;
     }catch(e){
         console.log(e);
