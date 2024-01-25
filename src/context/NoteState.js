@@ -1,8 +1,13 @@
 import noteContext from "./noteContext";
 import { useState } from "react";
+import { Appearance } from "react-native";
+import { MMKVLoader,useMMKVStorage } from "react-native-mmkv-storage";
+
+const storage = new MMKVLoader().initialize();
 
 const NoteState = (props) => {
     const [notes, setNotes] = useState([])
+    const [folders, setFolders] = useState([])
     const [masterNotes, setMasterNotes] = useState([])
     const [refreshing, setRefreshing] = useState(false);
     const colors = [
@@ -17,6 +22,16 @@ const NoteState = (props) => {
     ]
     const [currentTab, setCurrentTab] = useState(0);
     const [isFirstLoad, setIsFirstLoad] = useState(true);
+    const [theme, setTheme] = useMMKVStorage("theme",storage,Appearance.getColorScheme());
+
+    handleThemeChange = () => {
+        if(theme==="dark"){
+            setTheme("light")
+
+        }else{
+            setTheme("dark")
+        }
+    }
     return (
         <noteContext.Provider value={{
             colors,
@@ -29,7 +44,11 @@ const NoteState = (props) => {
             masterNotes,
             setMasterNotes,
             isFirstLoad,
-            setIsFirstLoad
+            setIsFirstLoad,
+            theme,
+            setTheme,
+            folders,
+            setFolders,
         }}>
             {props.children}
         </noteContext.Provider>

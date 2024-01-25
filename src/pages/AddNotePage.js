@@ -10,7 +10,7 @@ import noteContext from "../context/noteContext";
 import { ScrollView } from 'react-native-gesture-handler'
 
 const AddNotePage = ({ navigation, route }) => {
-  const { notes, setNotes, setRefreshing, colors, setMasterNotes, masterNotes } = useContext(noteContext);
+  const { notes, setNotes, setRefreshing, colors, setMasterNotes, masterNotes,theme } = useContext(noteContext);
   const [CurrentNote, setCurrentNote] = useState({
     title: '',
     content: '',
@@ -24,7 +24,7 @@ const AddNotePage = ({ navigation, route }) => {
   }, [route.params?.note])
 
   const [bottomSheetVisible, setBottomSheetVisible] = useState(true)
-  const [pageColor, setPageColor] = useState('rgba(255, 255, 255, 0)')
+  const [pageColor, setPageColor] = useState(theme==="light"?'rgba(255, 255, 255, 0)': 'rgba(30, 30, 30, 1)')
   const bottomSheetRef = useRef();
   const snapPoints = useMemo(() => ['55%'], []);
   //const [isMounted,setIsMounted] = useState(false);
@@ -140,12 +140,15 @@ const AddNotePage = ({ navigation, route }) => {
                   <TouchableOpacity style={{
                     width: 35,
                     height: 35,
+                    borderStyle: 'solid',
+                    borderWidth: 2,
+                    borderColor: (color == pageColor) ? "green" : color,
                     borderRadius: 10,
                     backgroundColor: color,
                     marginRight: 20,
                   }}
                     onPress={() => {
-                      setPageColor(color)
+                      setPageColor( color)
                     }}
                     key={index}
                   />
@@ -160,8 +163,8 @@ const AddNotePage = ({ navigation, route }) => {
             marginBottom: 10,
           }}>Other options</Text>
           <BottomDrawerActionButton title="Note Type" currentValue="General" iconName="edit" />
-          <BottomDrawerActionButton title="Set password" currentValue="Not Set" iconName="edit" />
-          <BottomDrawerActionButton title="Set reminder" currentValue="Not set" iconName="edit" />
+          <BottomDrawerActionButton title="Set password" currentValue="Not Set" iconName="lock" />
+          <BottomDrawerActionButton title="Set reminder" currentValue="Not set" iconName="clock" />
           <View style={{
             display: 'flex',
             flexDirection: 'row',
@@ -235,13 +238,13 @@ const AddNotePage = ({ navigation, route }) => {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'rgba(60, 60, 60, 1)',
+            backgroundColor: 'rgba(99, 199, 109, 1)',
             padding: 10,
             borderRadius: 50,
           }}
             onPress={handleAddEditnote}
           >
-            <Ionicons name="bookmark-outline" size={25} color="#fff" />
+            <Ionicons name="save" size={25} color="white" />
           </TouchableOpacity>
           <TouchableOpacity style={{
             display: 'flex',
@@ -266,10 +269,10 @@ const AddNotePage = ({ navigation, route }) => {
         fontSize: 30,
         fontWeight: 'bold',
         marginTop: 15,
-        color: "rgba(60, 60, 60, 1)",
+        color: (theme==="light" || pageColor!=="rgba(30, 30, 30, 1)")?"rgba(60, 60, 60, 1)":'#fff',
       }}
         placeholder='Title'
-        placeholderTextColor={'rgba(60, 60, 60, 0.6)'}
+        placeholderTextColor={(theme==="light" || pageColor!=="rgba(30, 30, 30, 1)")?'rgba(60, 60, 60, 0.6)':"#ffffffA3"}
         cursorColor={'rgba(60, 60, 60, 1)'}
         value={CurrentNote.title}
         onChangeText={(value) => {
@@ -279,33 +282,33 @@ const AddNotePage = ({ navigation, route }) => {
       <View style={{
         width: "100%",
         height: 1,
-        backgroundColor: 'rgba(0,0,0,0.2)',
+        backgroundColor:(theme==="light" || pageColor!=="rgba(30, 30, 30, 1)")?'rgba(60, 60, 60, 0.6)':"#ffffff53",
       }} />
       <View style={{
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 10,
+        paddingVertical: 5,
       }}>
-        <AntDesign name="pluscircle" size={20} color={"rgba(60, 60, 60, 0.7)"} />
+        <AntDesign name="pluscircle" size={18} color={(theme==="light" || pageColor!=="rgba(30, 30, 30, 1)")?'rgba(60, 60, 60, 0.6)':"#ffffffA3"} />
         <Text style={{
-          fontSize: 20,
-          color: "rgba(60, 60, 60, 0.7)",
+          fontSize: 18,
+          color:(theme==="light" || pageColor!=="rgba(30, 30, 30, 1)")?'rgba(60, 60, 60, 0.6)':"#ffffff83",
           marginLeft: 10,
         }}>Add Category</Text>
       </View>
       <View style={{
         width: "100%",
         height: 1,
-        backgroundColor: 'rgba(0,0,0,0.2)',
+        backgroundColor:(theme==="light" || pageColor!=="rgba(30, 30, 30, 1)")?'rgba(60, 60, 60, 0.6)':"#ffffff53",
       }} />
       <TextInput style={{
         fontSize: 18,
         marginTop: 15,
-        color: "rgba(60, 60, 60, 1)",
+        color:(theme==="light" || pageColor!=="rgba(30, 30, 30, 1)")?"rgba(60, 60, 60, 1)":'#fff',
       }}
         placeholder='Start typing...'
-        placeholderTextColor={'rgba(60, 60, 60, 0.6)'}
+        placeholderTextColor={(theme==="light" || pageColor!=="rgba(30, 30, 30, 1)")?'rgba(60, 60, 60, 0.6)':"#ffffffA3"}
         cursorColor={'rgba(60, 60, 60, 1)'}
         multiline={true}
         value={CurrentNote.content}

@@ -21,7 +21,8 @@ export const createTable = async (db,tableName)=>{
         status TEXT DEFAULT 'saved',
         created_at DATETIME,
         updated_at DATETIME,
-        isLiked INTEGER DEFAULT 0
+        isLiked INTEGER DEFAULT 0,
+        folder_id INTEGER DEFAULT NULL
     )`;
     await db.executeSql(query);
     console.log('createTable');
@@ -38,6 +39,7 @@ export const getNotes = async (db,tableName)=>{
                 notes.push(result.rows.item(i));
             }
         });
+        console.log('notes',notes);
         return notes;
     }catch(e){
         console.log(e);
@@ -123,6 +125,48 @@ export const deleteTable = async (db,tableName)=>{
     try{
         const query = `DROP TABLE ${tableName}`;
         const results = await db.executeSql(query);
+        return results;
+    }catch(e){
+        console.log(e);
+    }
+}
+
+export const createFolderTable = async (db,tableName)=>{
+    console.log('createFolderTable');
+    try{
+        const query = `CREATE TABLE IF NOT EXISTS ${tableName}(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT
+        )`;
+        const results = await db.executeSql(query);
+        return results;
+    }catch(e){
+        console.log(e);
+    }
+}
+
+export const getFolders = async (db,tableName)=>{
+    console.log('getFolders');
+    try{
+        const folders = [];
+        const results = await db.executeSql(`
+        SELECT * FROM ${tableName}`);
+        results.forEach(result=>{
+            for(let i = 0;i<result.rows.length;i++){
+                folders.push(result.rows.item(i));
+            }
+        });
+        return folders;
+    }catch(e){
+        console.log(e);
+    }
+}
+
+export const addFolder = async (db,tableName,folder)=>{
+    console.log('addFolder');
+    try{
+        const query = `INSERT INTO ${tableName}(name) VALUES(?)`;
+        const results = await db.executeSql(query,[folder.name]);
         return results;
     }catch(e){
         console.log(e);
