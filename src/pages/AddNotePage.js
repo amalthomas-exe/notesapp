@@ -27,17 +27,6 @@ const AddNotePage = ({ navigation, route }) => {
   const [pageColor, setPageColor] = useState(theme==="light"?'rgba(255, 255, 255, 0)': 'rgba(30, 30, 30, 1)')
   const bottomSheetRef = useRef();
   const snapPoints = useMemo(() => ['55%'], []);
-  //const [isMounted,setIsMounted] = useState(false);
-
-  // useEffect(() => {
-  //   if(isMounted){
-  //     setBottomSheetVisible(true)
-  //     console.log("bottomSheetVisible")
-  //   }
-  //   else{
-  //     setIsMounted(true);
-  //   }
-  // }, [isMounted])
 
   const handleAddEditnote = async () => {
     try {

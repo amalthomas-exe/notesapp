@@ -9,6 +9,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import OpenContextMenuModalScreen from './src/pages/OpenContextMenuModalScreen'
 import OpenContextMenuFolder from './src/pages/OpenContextMenuFolder'
 import AddFolder from './src/pages/AddFolder'
+import AddMoveToFolder from './src/pages/AddMoveToFolder'
 
 const Stack = createNativeStackNavigator()
 
@@ -44,6 +45,10 @@ const App = () => {
                 animationDuration: 0,
               }} />
               <Stack.Screen name="AddFolder" component={AddFolder} options={{
+                headerShown: false,
+                animation: 'none',
+              }} />
+              <Stack.Screen name="AddMoveToFolder" component={AddMoveToFolder} options={{
                 headerShown: false,
                 animation: 'none',
               }} />

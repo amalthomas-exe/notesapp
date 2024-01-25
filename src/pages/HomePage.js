@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState, useContext, memo, useRef } from 'react'
 import noteContext from "../context/noteContext";
-import { View, Text, ScrollView, TouchableOpacity, FlatList, StatusBar } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, FlatList, StatusBar, KeyboardAvoidingView } from 'react-native'
 import Animated, { ColorSpace, LinearTransition, useSharedValue, withTiming } from 'react-native-reanimated';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -11,7 +11,7 @@ import FolderCard from '../component/FolderCard';
 
 
 const HomePage = ({ navigation }) => {
-    const { notes, setNotes, refreshing, setRefreshing, currentTab, masterNotes, setMasterNotes, theme, folders, setFolders } = useContext(noteContext);
+    const { notes, setNotes, refreshing, setRefreshing, currentTab, masterNotes, setMasterNotes, theme, folders, addFolders } = useContext(noteContext);
     const [isAndButtonExpanded, setIsAndButtonExpanded] = useState(false);
     const topBarHeight = useSharedValue(40);
     const topBarOpacity = useSharedValue(1);
@@ -34,9 +34,7 @@ const HomePage = ({ navigation }) => {
             }
         }, {
             label: "Folders",
-            onPress: () => {
-                loadFolders();
-            }
+            onPress: () => {}
         },
         {
             label: "To-do",
@@ -70,31 +68,9 @@ const HomePage = ({ navigation }) => {
                 }
                 if (foldersFromDB.length) {
                     console.log("Folders", foldersFromDB)
-                    setFolders(foldersFromDB);
+                    addFolders(foldersFromDB);
                 } else {
                     console.log("No folders")
-                    setFolders([
-                        {
-                            id: 1,
-                            name: "General"
-                        },
-                        {
-                            id: 2,
-                            name: "Special"
-                        },
-                        {
-                            id: 3,
-                            name: "Work"
-                        },
-                        {
-                            id: 4,
-                            name: "Personal"
-                        },
-                        {
-                            id: 5,
-                            name: "Others"
-                        },
-                    ]);
                 }
             } catch (e) {
                 console.log("Error from useState", e);
@@ -135,9 +111,6 @@ const HomePage = ({ navigation }) => {
         }
     }, [masterNotes])
 
-
-    const loadFolders = () => { }
-
     const handleScroll = (e) => {
         const scrollPosition = e.nativeEvent.contentOffset.y;
         if (scrollPosition > 150) {
@@ -149,11 +122,12 @@ const HomePage = ({ navigation }) => {
         }
     }
     return (
-        <View style={{
+        <KeyboardAvoidingView style={{
             flex: 1,
             backgroundColor: (theme === "light") ? 'rgba(230, 228, 228, 1)' : "rgba(30, 30, 30, 1)",
             paddingTop: 40,
-        }}>
+        }}
+        >
             <StatusBar translucent={true} backgroundColor={'rgba(255,255,255,0)'} barStyle={theme === "light" ? 'dark-content' : 'light-content'} />
             <View style={{
 
@@ -265,8 +239,8 @@ const HomePage = ({ navigation }) => {
                             columnWrapperStyle={{
                                 justifyContent: 'space-between',
                             }}
-                            renderItem={({ item }) => <View>
-                                <FolderCard folder={item} key={item.id} />
+                            renderItem={({ item ,index}) => <View>
+                                <FolderCard folder={item} color={item.color?item.color:"#FFCA28"} key={item.id} dimension={180} index={index}/>
                                 {(folders.indexOf(item) == folders.length - 1) ? <View style={{
                                     height: 200,
                                 }} /> : null}
@@ -417,7 +391,7 @@ const HomePage = ({ navigation }) => {
                 </View>
             </View>
 
-        </View>
+        </KeyboardAvoidingView>
     )
 }
 

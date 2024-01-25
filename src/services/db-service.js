@@ -22,8 +22,13 @@ export const createTable = async (db,tableName)=>{
         created_at DATETIME,
         updated_at DATETIME,
         isLiked INTEGER DEFAULT 0,
+        isRecycled INTEGER DEFAULT 0,
+        isLocked INTEGER DEFAULT 0,
+        password TEXT DEFAULT NULL,
+        isHidden INTEGER DEFAULT 0,
         folder_id INTEGER DEFAULT NULL
     )`;
+    
     await db.executeSql(query);
     console.log('createTable');
 }
@@ -136,7 +141,15 @@ export const createFolderTable = async (db,tableName)=>{
     try{
         const query = `CREATE TABLE IF NOT EXISTS ${tableName}(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT
+            name TEXT,
+            created_at DATETIME,
+            updated_at DATETIME,
+            color TEXT DEFAULT '#FFCA28',
+            isHidden INTEGER DEFAULT 0,
+            isLocked INTEGER DEFAULT 0,
+            password TEXT DEFAULT NULL,
+            isRecycled INTEGER DEFAULT 0,
+            noteCount INTEGER DEFAULT 0
         )`;
         const results = await db.executeSql(query);
         return results;
@@ -162,15 +175,38 @@ export const getFolders = async (db,tableName)=>{
     }
 }
 
-export const addFolder = async (db,tableName,folder)=>{
+export const addFolderToDB = async (db,tableName,folder)=>{
     console.log('addFolder');
     try{
-        const query = `INSERT INTO ${tableName}(name) VALUES(?)`;
-        const results = await db.executeSql(query,[folder.name]);
+        const query = `INSERT INTO ${tableName}(name,color,created_at,updated_at) VALUES(?,?,?,?)`;
+        const results = await db.executeSql(query,[folder.name,folder.color,folder.created_at,folder.updated_at]);
         return results;
     }catch(e){
         console.log(e);
     }
 }
 
+export const deleteFolders = async (db,tableName,id)=>{
+    console.log('deleteFolders');
+    try{
+        const query = `DELETE FROM ${tableName} WHERE id=?`;
+        const results = await db.executeSql(query,[id]);
+        return results;
+    }catch(e){
+        console.log(e);
+    }
+}
+
+export const addNoteToFolder = async (db,note_id,folder_id)=>{
+    console.log('addNoteToFolder');
+    try{
+        let query = `UPDATE notes SET folder_id=? WHERE id=?`;
+        await db.executeSql(query,[folder_id,note_id]);
+        query = 'UPDATE folders SET noteCount=noteCount+1 WHERE id=?';
+        const results = await db.executeSql(query,[folder_id]);
+        return results;
+    }catch(e){
+        console.log(e);
+    }
+}
 enablePromise(true);

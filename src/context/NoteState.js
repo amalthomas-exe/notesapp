@@ -7,7 +7,7 @@ const storage = new MMKVLoader().initialize();
 
 const NoteState = (props) => {
     const [notes, setNotes] = useState([])
-    const [folders, setFolders] = useState([])
+    const [folders, addFolders] = useState([])
     const [masterNotes, setMasterNotes] = useState([])
     const [refreshing, setRefreshing] = useState(false);
     const colors = [
@@ -48,7 +48,7 @@ const NoteState = (props) => {
             theme,
             setTheme,
             folders,
-            setFolders,
+            addFolders,
         }}>
             {props.children}
         </noteContext.Provider>
