@@ -240,7 +240,7 @@ const HomePage = ({ navigation }) => {
                                 justifyContent: 'space-between',
                             }}
                             renderItem={({ item ,index}) => <View>
-                                <FolderCard folder={item} color={item.color?item.color:"#FFCA28"} key={item.id} dimension={180} index={index}/>
+                                <FolderCard folder={item} color={item.color?item.color:"#FFCA28"} key={item.id} dimension={160} index={index}/>
                                 {(folders.indexOf(item) == folders.length - 1) ? <View style={{
                                     height: 200,
                                 }} /> : null}
@@ -348,7 +348,7 @@ const HomePage = ({ navigation }) => {
                                             setIsAndButtonExpanded(false);
                                         }}
                                     >
-                                        <FontAwesome name="sticky-note-o" size={25} color="#fff" />
+                                        <AntDesign name="plus" size={25} color="#fff" />
                                     </TouchableOpacity>
                                     <TouchableOpacity style={{
                                         display: 'flex',

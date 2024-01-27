@@ -68,7 +68,7 @@ const AddFolder = ({ navigation }) => {
                         alignItems: 'center',
                         width: '100%'
                     }}>
-                        <FolderCard folder={folder} dimension={180} />
+                        <FolderCard folder={folder} dimension={160} />
                     </View>
                     <TextInput
                         style={{
@@ -78,7 +78,7 @@ const AddFolder = ({ navigation }) => {
                             backgroundColor: theme === "light" ? '#0000001D' : '#ffffff1D',
                             paddingHorizontal: 10,
                             paddingVertical: 10,
-                            marginTop: 10,
+                            marginTop: 20,
                             borderStyle: 'solid',
                             borderWidth: 1,
                             borderColor: theme === "light" ? '#0000001D' : '#ffffff1D',

@@ -25,7 +25,7 @@ const FolderCard = (props) => {
     return (
         <Animated.View
             sharedTransitionTag={`tag${folder.id}`}
-            entering={ZoomIn.delay(index*75)}
+            entering={route.name==="Home"?ZoomIn.delay(index*75):null}
         >
             <TouchableNativeFeedback
                 onPress={() => {
@@ -61,13 +61,17 @@ const FolderCard = (props) => {
                         justifyContent: 'center',
                         alignItems: 'center',
                     }}
+
+                    imageStyle={{
+                        resizeMode: 'contain',
+                    }}
                 >
                     <View style={{
                         paddingHorizontal: 20,
                     }}>
                         <Text style={{
                             color: '#000000DE',
-                            fontSize: route.name==="AddMoveToFolder"? 14: 20,
+                            fontSize: route.name==="AddMoveToFolder"? 12: 16,
                             fontWeight: '600',
 
                         }}>{folder.name}</Text>

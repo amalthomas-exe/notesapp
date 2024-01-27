@@ -34,7 +34,7 @@ const OpenContextMenuFolder = ({ navigation, route }) => {
                     alignItems: 'center',
                 }}>
 
-                    <FolderCard folder={folder} color={folder.color} dimension={180}/>
+                    <FolderCard folder={folder} color={folder.color} dimension={160}/>
                 </View>
                 <View style={{
                     marginTop: 20,

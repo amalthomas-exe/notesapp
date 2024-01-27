@@ -117,11 +117,14 @@ const AddMoveToFolder = ({navigation,route}) => {
                                 onPress={() => {
                                     handleAddNoteToFolder(folder.id)
                                 }}
+                                style={{
+                                    marginLeft: index % 2 === 0 ? 0 : 20,
+                                }}
 
                                 key={index}
                             >
 
-                                <FolderCard folder={folder} index={index} dimension={110} />
+                                <FolderCard folder={folder} index={index} dimension={100} />
                             </TouchableOpacity>
                         )
                     })
