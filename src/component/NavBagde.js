@@ -49,6 +49,7 @@ const NavBagde = ({ label, highlighted,onPress,index }) => {
                 style={highlighted ? styles.highlightedBadgeStyle : styles.normalBadgeStyle}
                 onPress={()=>{
                     onPress()
+                    console.log('index',index)
                     setCurrentTab(index);
                 }}
             >

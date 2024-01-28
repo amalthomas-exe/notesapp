@@ -1,10 +1,10 @@
 import React, { memo, useContext, useState, useRef, useEffect } from 'react'
-import { View, Text, TouchableOpacity, Pressable, TouchableNativeFeedback, Dimensions } from 'react-native'
+import { View, Text, TouchableOpacity, Pressable, TouchableNativeFeedback, Dimensions, Vibration } from 'react-native'
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { getDBConnection, deleteNote, addLikedNote, deleteLikedNote } from '../services/db-service';
 import noteContext from '../context/noteContext';
 import Animated, { useSharedValue, withTiming, withSpring, Easing, ReduceMotion, SlideInRight, SharedTransition, ZoomIn, ZoomOut } from 'react-native-reanimated';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const NoteCard = ({
     note,
@@ -18,6 +18,7 @@ const NoteCard = ({
     const [liked, setLiked] = useState(isLiked == 1);
     const isMounted = useRef(false);
     const navigation = useNavigation();
+    const route = useRoute();
 
     useEffect(() => {
         if (isMounted.current) {
@@ -118,10 +119,13 @@ const NoteCard = ({
                 navigation.navigate("AddNote", { note: note })
             }}
             onLongPress={() => {
-                console.log("Long pressed")
-                navigation.navigate("OpenContextMenuModal", { note: note, index: index })
-                openContextMenu();
+                if (route.name === "Home") {
+                    console.log("Long pressed")
+                    navigation.navigate("OpenContextMenuModal", { note: note, index: index })
 
+                    Vibration.vibrate(100);
+                    openContextMenu();
+                }
             }}
 
             delayLongPress={150}
@@ -154,7 +158,7 @@ const NoteCard = ({
                             fontWeight: '800',
                             color: "rgba(80, 80, 80, 1)"
                         }}>
-                            {category + index + id}
+                            {category}
                         </Text>
                         <Text style={{
                             fontSize: 22,
@@ -190,7 +194,7 @@ const NoteCard = ({
                             color: "rgba(60, 60, 60, 1)",
                             fontWeight: '600'
                         }}>
-                            {convertDateTimeToUndertsandable(updated_at) + isLiked}
+                            {convertDateTimeToUndertsandable(updated_at)}
                         </Text>
                     </View>
                 </View>

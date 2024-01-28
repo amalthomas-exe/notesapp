@@ -1,5 +1,5 @@
 import React, { useContext ,useState} from 'react'
-import { View, Text, ImageBackground, TouchableNativeFeedback } from 'react-native'
+import { View, Text, ImageBackground, TouchableNativeFeedback, Vibration } from 'react-native'
 import { useNavigation ,useRoute} from '@react-navigation/native'
 import noteContext from '../context/noteContext'
 import folder_9DC6E9 from '../../assets/folder-9DC6E9.png'
@@ -24,18 +24,22 @@ const FolderCard = (props) => {
 
     return (
         <Animated.View
-            sharedTransitionTag={`tag${folder.id}`}
+            sharedTransitionTag={`foldertag${folder.id}`}
             entering={route.name==="Home"?ZoomIn.delay(index*75):null}
         >
             <TouchableNativeFeedback
                 onPress={() => {
                     if(route.name==="Home"){
                         console.log('folder', folder)
+                        navigation.navigate("OpenFolderView",{
+                            folder:folder
+                        })
                     }
                     
                 }}
 
                 onLongPress={() => {
+                    Vibration.vibrate(150)
                     navigation.navigate('OpenContextMenuFolder', {folder:folder})
                 }}
 

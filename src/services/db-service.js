@@ -209,4 +209,21 @@ export const addNoteToFolder = async (db,note_id,folder_id)=>{
         console.log(e);
     }
 }
+
+export const  getNotesOfFolder = async (db,folder_id)=>{
+    console.log("getNotesFtomFolder")
+    try{
+        const folderNotes = [];
+        let query = 'SELECT * FROM notes where folder_id=?';
+        const results =  await db.executeSql(query,[folder_id])
+        results.forEach(result=>{
+            for(let i = 0;i<result.rows.length;i++){
+                folderNotes.push(result.rows.item(i));
+            }
+        });
+        return folderNotes; 
+    }catch(e){
+        console.log(e)
+    }
+}
 enablePromise(true);

@@ -1,6 +1,6 @@
 package com.notesappnew
-
 import com.facebook.react.ReactActivity
+import org.devio.rn.splashscreen.SplashScreen;
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 class MainActivity : ReactActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
+    SplashScreen.show(this);
     super.onCreate(null)
   }
 

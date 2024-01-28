@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext,useEffect } from 'react'
 import NoteState from './src/context/NoteState'
 import AddNotePage from './src/pages/AddNotePage'
 import HomePage from './src/pages/HomePage'
@@ -10,10 +10,17 @@ import OpenContextMenuModalScreen from './src/pages/OpenContextMenuModalScreen'
 import OpenContextMenuFolder from './src/pages/OpenContextMenuFolder'
 import AddFolder from './src/pages/AddFolder'
 import AddMoveToFolder from './src/pages/AddMoveToFolder'
+import SplashScreen from 'react-native-splash-screen';
+import OpenFolderView from './src/pages/OpenFolderView'
 
 const Stack = createNativeStackNavigator()
 
 const App = () => {
+
+  useEffect(() => {
+    SplashScreen.hide();
+  },[])
+  
   return (
     <NoteState>
       <GestureHandlerRootView style={{
@@ -33,6 +40,10 @@ const App = () => {
             <Stack.Screen name="Settings" component={Settings} options={{
               headerShown: false,
               animation: 'slide_from_right',
+            }} />
+            <Stack.Screen name="OpenFolderView" component={OpenFolderView} options={{
+              headerShown: false,
+              animation: 'slide_from_bottom',
             }} />
             <Stack.Group screenOptions={{ presentation: 'transparentModal' }}>
               <Stack.Screen name="OpenContextMenuModal" component={OpenContextMenuModalScreen} options={{

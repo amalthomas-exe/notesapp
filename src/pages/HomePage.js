@@ -36,20 +36,6 @@ const HomePage = ({ navigation }) => {
             label: "Folders",
             onPress: () => {}
         },
-        {
-            label: "To-do",
-            onPress: () => {
-                setNotes([])
-            }
-        },
-        {
-            label: "Ideas",
-            onPress: () => { setNotes([]) }
-        },
-        {
-            label: "Others",
-            onPress: () => { setNotes([]) }
-        }
     ]
     const loaddDataCallBack = useCallback(async () => {
         if (currentTab == 0) {
@@ -176,7 +162,7 @@ const HomePage = ({ navigation }) => {
                 <View style={{
                     marginTop: 10
                 }}>
-                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} scrollEnabled={false}>
                         {
                             navItems.map((item, index) => {
                                 return <NavBadge label={item.label} highlighted={(currentTab == (index))} onPress={item.onPress} key={index} index={index} />

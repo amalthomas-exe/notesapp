@@ -1,69 +1,69 @@
-import React, { useState, useCallback,useContext } from 'react'
-import { View, Text,Appearance } from 'react-native'
+import React, { useState, useCallback, useContext } from 'react'
+import { View, Text, Appearance } from 'react-native'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import DropDownPicker from 'react-native-dropdown-picker'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import noteContext from '../context/noteContext'
 
-const CustomDropDownPicker = ({name, open, setOpen, value, items, setItems, setValue, onOpen }) => {
-    const {theme,setTheme} = useContext(noteContext);
+const CustomDropDownPicker = ({ name, open, setOpen, value, items, setItems, setValue, onOpen }) => {
+    const { theme, setTheme } = useContext(noteContext);
     const colorScheme = Appearance.getColorScheme();
     return (
-            <DropDownPicker
-                style={{
-                    width: 150,
-                    backgroundColor: theme==="light"?'rgba(230, 228, 228, 1)':"rgba(30, 30, 30, 1)",
-                    borderColor: theme==="light"?'rgba(0,0,0,0.2)':"#ffffff6E",
-                    zIndex: open ? 1 : 0,
-                    
-                }}
-                labelStyle={{
-                    fontSize: 14,
-                    color: theme==="light"?'#000000AE':"rgba(255,255,255,0.9)",
-                }}
-                listItemLabelStyle={{
-                    fontSize: 14,
-                    color: theme==="light"?'#000000AE':"rgba(255,255,255,0.9)",
-                }}
+        <DropDownPicker
+            style={{
+                width: 150,
+                backgroundColor: theme === "light" ? 'rgba(230, 228, 228, 1)' : "rgba(30, 30, 30, 1)",
+                borderColor: theme === "light" ? 'rgba(0,0,0,0.2)' : "#ffffff6E",
+                zIndex: open ? 1 : 0,
 
-                tickIconStyle={{
-                    tintColor: theme==="light"?'#000000AE':"rgba(255,255,255,0.9)",
-                }}
-                ArrowDownIconComponent={() => <AntDesign name="down" size={16} color={theme==="light"?'#000000AE':"rgba(255,255,255,0.9)"} />}
-                ArrowUpIconComponent={() => <AntDesign name="up" size={16} color={theme==="light"?'#000000AE':"rgba(255,255,255,0.9)"} />}
-                dropDownContainerStyle={{
-                    backgroundColor: theme==="light"?'rgba(230, 228, 228, 1)':"rgba(30, 30, 30, 1)",
-                    borderColor: theme==="light"?'rgba(0,0,0,0.2)':'#ffffff7E',
-                }}
-                placeholderStyle={{
-                    fontSize: 14,
-                    color: theme==="light"?'#000000AE':"rgba(255,255,255,0.9)",
-                }}
-                containerStyle={{
-                    width: 150,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    paddingVertical: 0,
-                }}
-                onOpen={onOpen}
-                open={open}
-                value={value}
-                onChangeValue={(value) => {
-                    if(name==="theme"){
-                        setTheme(value);
-                    }
-                }}
-                items={items}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setItems}
-            />
+            }}
+            labelStyle={{
+                fontSize: 14,
+                color: theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)",
+            }}
+            listItemLabelStyle={{
+                fontSize: 14,
+                color: theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)",
+            }}
+
+            tickIconStyle={{
+                tintColor: theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)",
+            }}
+            ArrowDownIconComponent={() => <AntDesign name="down" size={16} color={theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)"} />}
+            ArrowUpIconComponent={() => <AntDesign name="up" size={16} color={theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)"} />}
+            dropDownContainerStyle={{
+                backgroundColor: theme === "light" ? 'rgba(230, 228, 228, 1)' : "rgba(30, 30, 30, 1)",
+                borderColor: theme === "light" ? 'rgba(0,0,0,0.2)' : '#ffffff7E',
+            }}
+            placeholderStyle={{
+                fontSize: 14,
+                color: theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)",
+            }}
+            containerStyle={{
+                width: 150,
+                display: 'flex',
+                justifyContent: 'center',
+                paddingVertical: 0,
+            }}
+            onOpen={onOpen}
+            open={open}
+            value={value}
+            onChangeValue={(value) => {
+                if (name === "theme") {
+                    setTheme(value);
+                }
+            }}
+            items={items}
+            setOpen={setOpen}
+            setValue={setValue}
+            setItems={setItems}
+        />
     )
 }
 
 const Settings = () => {
-    const {theme} = useContext(noteContext);
+    const { theme } = useContext(noteContext);
     const [themeOpen, setThemeOpen] = useState(false);
     const [themeValue, setThemeValue] = useState(theme);
     const [themeItems, setThemeItems] = useState([
@@ -104,7 +104,7 @@ const Settings = () => {
     return (
         <View style={{
             flex: 1,
-            backgroundColor: (theme==="light")?'rgba(230, 228, 228, 1)':"rgba(30, 30, 30, 1)",
+            backgroundColor: (theme === "light") ? 'rgba(230, 228, 228, 1)' : "rgba(30, 30, 30, 1)",
             paddingTop: 40,
             paddingHorizontal: 20,
             display: 'flex',
@@ -113,14 +113,14 @@ const Settings = () => {
             <Text style={{
                 fontSize: 30,
                 fontWeight: '500',
-                color: theme==="light"?'#000':"#fff",
+                color: theme === "light" ? '#000' : "#fff",
                 marginBottom: 40,
             }}>Settings</Text>
 
             <Text style={{
                 fontSize: 16,
                 fontWeight: '500',
-                color: theme==="light"?'#0000008A':"rgba(255,255,255,0.7)",
+                color: theme === "light" ? '#0000008A' : "rgba(255,255,255,0.7)",
                 marginBottom: 10,
             }}>
                 General
@@ -137,12 +137,12 @@ const Settings = () => {
                     display: 'flex',
                     alignItems: 'center',
                 }}>
-                    <AntDesign name="bulb1" size={16} color={theme==="light"?'#000000AE':"rgba(255,255,255,0.9)"} />
+                    <AntDesign name="bulb1" size={16} color={theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)"} />
                     <Text style={{
                         fontSize: 16,
                         marginLeft: 8,
                         fontWeight: '500',
-                        color: theme==="light"?'#000000AE':"rgba(255,255,255,0.9)"
+                        color: theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)"
                     }}>
                         App theme
                     </Text>
@@ -171,12 +171,12 @@ const Settings = () => {
                     display: 'flex',
                     alignItems: 'center',
                 }}>
-                    <FontAwesome name="sort-amount-asc" size={16} color={theme==="light"?'#000000AE':"rgba(255,255,255,0.9)"} />
+                    <FontAwesome name="sort-amount-asc" size={16} color={theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)"} />
                     <Text style={{
                         fontSize: 16,
                         marginLeft: 8,
                         fontWeight: '500',
-                        color: theme==="light"?'#000000AE':"rgba(255,255,255,0.9)",
+                        color: theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)",
                     }}>
                         Display order
                     </Text>
@@ -203,12 +203,12 @@ const Settings = () => {
                     display: 'flex',
                     alignItems: 'center',
                 }}>
-                    <AntDesign name="edit" size={16} color={theme==="light"?'#000000AE':"rgba(255,255,255,0.9)"} />
+                    <AntDesign name="edit" size={16} color={theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)"} />
                     <Text style={{
                         fontSize: 16,
                         marginLeft: 8,
                         fontWeight: '500',
-                        color: theme==="light"?'#000000AE':"rgba(255,255,255,0.9)",
+                        color: theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)",
                     }}>
                         Auto save drafts
                     </Text>
@@ -226,7 +226,7 @@ const Settings = () => {
                 marginTop: 30,
                 fontSize: 16,
                 fontWeight: '500',
-                color: theme==="light"?'#0000008A':"rgba(255,255,255,0.7)",
+                color: theme === "light" ? '#0000008A' : "rgba(255,255,255,0.7)",
                 marginBottom: 10,
             }}>
                 Backup
@@ -244,12 +244,12 @@ const Settings = () => {
                     display: 'flex',
                     alignItems: 'center',
                 }}>
-                    <AntDesign name="user" size={16} color={theme==="light"?'#000000AE':"rgba(255,255,255,0.9)"}/>
+                    <AntDesign name="user" size={16} color={theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)"} />
                     <Text style={{
                         fontSize: 16,
                         marginLeft: 8,
                         fontWeight: '500',
-                        color: theme==="light"?'#000000AE':"rgba(255,255,255,0.9)",
+                        color: theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)",
                     }}>
                         Linked account
                     </Text>
@@ -264,11 +264,11 @@ const Settings = () => {
                         fontSize: 16,
                         fontWeight: '500',
                         marginRight: 10,
-                        color: theme==="light"?'#000000AE':"rgba(255,255,255,0.9)",
+                        color: theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)",
                     }}>
                         Not set
                     </Text>
-                    <AntDesign name="right" size={16} color={theme==="light"?'#000000AE':"rgba(255,255,255,0.9)"} />
+                    <AntDesign name="right" size={16} color={theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)"} />
                 </View>
             </View>
             <View style={{
@@ -284,12 +284,12 @@ const Settings = () => {
                     display: 'flex',
                     alignItems: 'center',
                 }}>
-                    <AntDesign name="cloudo" size={16} color={theme==="light"?'#000000AE':"rgba(255,255,255,0.9)"} />
+                    <AntDesign name="cloudo" size={16} color={theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)"} />
                     <Text style={{
                         fontSize: 16,
                         marginLeft: 8,
                         fontWeight: '500',
-                        color: theme==="light"?'#000000AE':"rgba(255,255,255,0.9)",
+                        color: theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)",
                     }}>
                         Cloud backup
                     </Text>
@@ -304,11 +304,11 @@ const Settings = () => {
                         fontSize: 16,
                         fontWeight: '500',
                         marginRight: 10,
-                        color: theme==="light"?'#000000AE':"rgba(255,255,255,0.9)",
+                        color: theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)",
                     }}>
                         Enabled
                     </Text>
-                    <AntDesign name="right" size={16} color={theme==="light"?'#000000AE':"rgba(255,255,255,0.9)"}/>
+                    <AntDesign name="right" size={16} color={theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)"} />
                 </View>
             </View>
             <View style={{
@@ -324,12 +324,12 @@ const Settings = () => {
                     display: 'flex',
                     alignItems: 'center',
                 }}>
-                    <MaterialCommunityIcons name="backup-restore" size={16} color={theme==="light"?'#000000AE':"rgba(255,255,255,0.9)"} />
+                    <MaterialCommunityIcons name="backup-restore" size={16} color={theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)"} />
                     <Text style={{
                         fontSize: 16,
                         marginLeft: 8,
                         fontWeight: '500',
-                        color: theme==="light"?'#000000AE':"rgba(255,255,255,0.9)",
+                        color: theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)",
                     }}>
                         Automatic backup
                     </Text>
@@ -341,14 +341,14 @@ const Settings = () => {
                     value={backupValue}
                     setValue={setBackupValue}
                     items={backupItems}
-                    setItems={setBackupItems} 
+                    setItems={setBackupItems}
                 />
             </View>
             <Text style={{
                 marginTop: 30,
                 fontSize: 16,
                 fontWeight: '500',
-                color: theme==="light"?'#0000008A':"rgba(255,255,255,0.7)",
+                color: theme === "light" ? '#0000008A' : "rgba(255,255,255,0.7)",
                 marginBottom: 10,
             }}>
                 Security
@@ -366,12 +366,12 @@ const Settings = () => {
                     display: 'flex',
                     alignItems: 'center',
                 }}>
-                    <AntDesign name="lock" size={16} color={theme==="light"?'#000000AE':"rgba(255,255,255,0.9)"} />
+                    <AntDesign name="lock" size={16} color={theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)"} />
                     <Text style={{
                         fontSize: 16,
                         marginLeft: 8,
                         fontWeight: '500',
-                        color: theme==="light"?'#000000AE':"rgba(255,255,255,0.9)",
+                        color: theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)",
                     }}>
                         App Lock
                     </Text>
@@ -386,11 +386,11 @@ const Settings = () => {
                         fontSize: 16,
                         fontWeight: '500',
                         marginRight: 10,
-                        color: theme==="light"?'#000000AE':"rgba(255,255,255,0.9)",
+                        color: theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)",
                     }}>
                         Not set
                     </Text>
-                    <AntDesign name="right" size={16} color={theme==="light"?'#000000AE':"rgba(255,255,255,0.9)"} />
+                    <AntDesign name="right" size={16} color={theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)"} />
                 </View>
             </View>
             <View style={{
@@ -406,12 +406,12 @@ const Settings = () => {
                     display: 'flex',
                     alignItems: 'center',
                 }}>
-                    <FontAwesome name="eye-slash" size={16} color={theme==="light"?'#000000AE':"rgba(255,255,255,0.9)"} />
+                    <FontAwesome name="eye-slash" size={16} color={theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)"} />
                     <Text style={{
                         fontSize: 16,
                         marginLeft: 8,
                         fontWeight: '500',
-                        color: theme==="light"?'#000000AE':"rgba(255,255,255,0.9)",
+                        color: theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)",
                     }}>
                         Encryption method
                     </Text>
@@ -426,11 +426,11 @@ const Settings = () => {
                         fontSize: 16,
                         fontWeight: '500',
                         marginRight: 10,
-                        color: theme==="light"?'#000000AE':"rgba(255,255,255,0.9)",
+                        color: theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)",
                     }}>
                         Not set
                     </Text>
-                    <AntDesign name="right" size={16} color={theme==="light"?'#000000AE':"rgba(255,255,255,0.9)"} />
+                    <AntDesign name="right" size={16} color={theme === "light" ? '#000000AE' : "rgba(255,255,255,0.9)"} />
                 </View>
             </View>
 
