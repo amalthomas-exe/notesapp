@@ -46,6 +46,7 @@ const AddNotePage = ({ navigation, route }) => {
         setNotes(editNotes);
         setMasterNotes(masterEditNotes);
         setRefreshing(true);
+        navigation.goBack();
         return
       }
       const result = await addNote(db, "notes", {
@@ -56,6 +57,7 @@ const AddNotePage = ({ navigation, route }) => {
       const id = result[0].insertId;
       setNotes([{ id, ...CurrentNote, created_at: dateTime, updated_at: dateTime }, ...notes]);
       setMasterNotes([{ id, ...CurrentNote, created_at: dateTime, updated_at: dateTime }, ...notes]);
+      navigation.goBack();
     }
     catch (e) {
       console.log(e);

@@ -32,7 +32,7 @@ const OpenFolderView = ({ navigation, route }) => {
         <View style={{
             flex: 1,
             backgroundColor: (theme === "light") ? 'rgba(230, 228, 228, 1)' : "rgba(30, 30, 30, 1)",
-            paddingTop: 40,
+            paddingTop: 60,
         }}>
             <View style={{
                 display:'flex',
@@ -43,12 +43,20 @@ const OpenFolderView = ({ navigation, route }) => {
             }}>
                 <Text style={{
                     fontSize:30,
-                    fontWeight:'bold',
+                    fontWeight:'500',
                     color:(theme==="light")?"#000":"#fff"
                 }}>
                     {folder.name}
                 </Text>
             </View>
+            <Text style={{
+                marginTop:10,
+                fontSize:20,
+                color:(theme==="light")?"#000":"#fff",
+                marginLeft:20,
+            }}>
+                No of notes: {folderNotes.length}
+            </Text>
             <FlatList
                 //itemLayoutAnimation={LinearTransition.duration(400)}
                 data={folderNotes}

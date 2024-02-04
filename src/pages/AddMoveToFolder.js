@@ -55,11 +55,16 @@ const AddMoveToFolder = ({navigation,route}) => {
             paddingVertical: 100,
             paddingHorizontal: 20,
         }}>
-            <View style={{
+            <TouchableOpacity style={{
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
-            }}>
+            }}
+            
+            onPress={()=>{
+                navigation.navigate('AddFolder');
+            }}
+            >
 
                 <FontAwesome6 name="folder-plus" size={20} color={theme === "light" ? '#000' : '#fff'} />
                 <Text style={{
@@ -67,7 +72,7 @@ const AddMoveToFolder = ({navigation,route}) => {
                     fontSize: 20,
                     marginLeft: 15,
                 }}>Create new folder</Text>
-            </View>
+            </TouchableOpacity>
             <View style={{
                 display: 'flex',
                 flexDirection: 'row',
@@ -106,6 +111,7 @@ const AddMoveToFolder = ({navigation,route}) => {
             <View style={{
                 display: 'flex',
                 flexDirection: 'row',
+                justifyContent: 'space-between',
                 flexWrap: 'wrap',
                 marginTop: 20,
             }}>
@@ -116,9 +122,7 @@ const AddMoveToFolder = ({navigation,route}) => {
 
                                 onPress={() => {
                                     handleAddNoteToFolder(folder.id)
-                                }}
-                                style={{
-                                    marginLeft: index % 2 === 0 ? 0 : 20,
+                                    navigation.goBack();
                                 }}
 
                                 key={index}

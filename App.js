@@ -43,7 +43,7 @@ const App = () => {
             }} />
             <Stack.Screen name="OpenFolderView" component={OpenFolderView} options={{
               headerShown: false,
-              animation: 'slide_from_bottom',
+              animation: 'fade',
             }} />
             <Stack.Group screenOptions={{ presentation: 'transparentModal' }}>
               <Stack.Screen name="OpenContextMenuModal" component={OpenContextMenuModalScreen} options={{

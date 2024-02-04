@@ -39,7 +39,7 @@ const FolderCard = (props) => {
                 }}
 
                 onLongPress={() => {
-                    Vibration.vibrate(150)
+                    Vibration.vibrate(100)
                     navigation.navigate('OpenContextMenuFolder', {folder:folder})
                 }}
 

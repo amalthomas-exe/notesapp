@@ -12,8 +12,8 @@ export const sayHello = ()=>{
     console.log('sayHello');
 }
 
-export const createTable = async (db,tableName)=>{
-    const query = `CREATE TABLE IF NOT EXISTS ${tableName}(
+export const createNotesTable = async (db)=>{
+    const query = `CREATE TABLE IF NOT EXISTS notes(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT,
         content TEXT,
@@ -114,6 +114,16 @@ export const editNote = async (db,tableName,note)=>{
     }
 }
 
+export const lockNote = async (db,id)=>{
+    console.log('lockNote');
+    try{
+        const query = `UPDATE notes SET isLocked=1 WHERE id=?`;
+        const results = await db.executeSql(query,[id]);
+    }catch(e){
+        console.log(e);
+    }
+}
+
 export const deleteNote = async (db,tableName,id)=>{
     console.log('deleteNote');
     try{
@@ -136,10 +146,10 @@ export const deleteTable = async (db,tableName)=>{
     }
 }
 
-export const createFolderTable = async (db,tableName)=>{
+export const createFolderTable = async (db)=>{
     console.log('createFolderTable');
     try{
-        const query = `CREATE TABLE IF NOT EXISTS ${tableName}(
+        const query = `CREATE TABLE IF NOT EXISTS folders(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
             created_at DATETIME,
@@ -162,8 +172,7 @@ export const getFolders = async (db,tableName)=>{
     console.log('getFolders');
     try{
         const folders = [];
-        const results = await db.executeSql(`
-        SELECT * FROM ${tableName}`);
+        const results = await db.executeSql(`SELECT * FROM ${tableName}`);
         results.forEach(result=>{
             for(let i = 0;i<result.rows.length;i++){
                 folders.push(result.rows.item(i));
@@ -189,7 +198,9 @@ export const addFolderToDB = async (db,tableName,folder)=>{
 export const deleteFolders = async (db,tableName,id)=>{
     console.log('deleteFolders');
     try{
-        const query = `DELETE FROM ${tableName} WHERE id=?`;
+        let query = `DELETE FROM ${tableName} WHERE id=?`;
+        await db.executeSql(query,[id]);
+        query = 'UPDATE notes SET folder_id=NULL WHERE folder_id=?';
         const results = await db.executeSql(query,[id]);
         return results;
     }catch(e){

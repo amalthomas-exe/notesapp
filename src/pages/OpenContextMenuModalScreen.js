@@ -3,10 +3,31 @@ import { View, Text, Button, Touchable, TouchableWithoutFeedback, TouchableOpaci
 import NoteCardContainer from '../component/NoteCardContainer'
 import noteContext from '../context/noteContext'
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import { getDBConnection,lockNote } from '../services/db-service';
 
 const OpenContextMenuModalScreen = ({ navigation, route }) => {
-  const { theme, folders, setFolders } = useContext(noteContext);
+  const { theme, folders, notes,setNotes,masterNotes,setMasterNotes,setFolders } = useContext(noteContext);
   const { note, index } = route.params;
+
+  const handleToggleLock =  async () => {
+    let db = await getDBConnection();
+    let newNotes = notes.map((item)=>{
+      if(item.id==note.id){
+        item.isLocked = 1;
+      }
+      return item;
+    })
+
+    let newMasterNotes = masterNotes.map((item)=>{
+      if(item.id==note.id){
+        item.isLocked = 1;
+      }
+      return item;
+    })
+    await lockNote(db,note.id);
+    setMasterNotes(newMasterNotes);
+    setNotes(newNotes);
+  }
   return (
       <View style={{
         flex: 1,
@@ -41,7 +62,7 @@ const OpenContextMenuModalScreen = ({ navigation, route }) => {
               marginLeft: 15,
             }}>Add to folder</Text>
           </TouchableOpacity>
-          <View style={{
+          <TouchableOpacity style={{
             display: 'flex',
             flexDirection: 'row',
             //backgroundColor: 'rgba(0,0,0,0.3)',
@@ -49,30 +70,19 @@ const OpenContextMenuModalScreen = ({ navigation, route }) => {
             marginTop: 20,
             borderRadius: 10,
             alignItems: 'center',
-          }}>
-            <FontAwesome6 name="eye-slash" size={20} color={theme === "light" ? '#000' : '#fff'} />
-            <Text style={{
-              fontSize: 18,
-              color: theme === "light" ? '#000' : '#fff',
-              marginLeft: 15,
-            }}>Hide note</Text>
-          </View>
-          <View style={{
-            display: 'flex',
-            flexDirection: 'row',
-            //backgroundColor: 'rgba(0,0,0,0.3)',
-            paddingHorizontal: 10,
-            marginTop: 20,
-            borderRadius: 10,
-            alignItems: 'center',
-          }}>
+          }}
+          
+          onPress={()=>{
+            handleToggleLock();
+          }}
+          >
             <FontAwesome6 name="lock" size={20} color={theme === "light" ? '#000' : '#fff'} />
             <Text style={{
               fontSize: 18,
               color: theme === "light" ? '#000' : '#fff',
               marginLeft: 15,
-            }}>Lock with password</Text>
-          </View>
+            }}>Lock note</Text>
+          </TouchableOpacity>
         </View>
       </View>
   )

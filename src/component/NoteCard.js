@@ -5,6 +5,7 @@ import { getDBConnection, deleteNote, addLikedNote, deleteLikedNote } from '../s
 import noteContext from '../context/noteContext';
 import Animated, { useSharedValue, withTiming, withSpring, Easing, ReduceMotion, SlideInRight, SharedTransition, ZoomIn, ZoomOut } from 'react-native-reanimated';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import ReactNativeBiometrics from 'react-native-biometrics';
 
 const NoteCard = ({
     note,
@@ -13,12 +14,31 @@ const NoteCard = ({
     closeContextMenu,
 }) => {
     const ScreenWidth = Dimensions.get("window").width;
-    const { id, title, content, category, updated_at, isLiked } = note;
+    const { id, title, content, category, updated_at, isLiked,isLocked } = note;
     const { notes, setNotes, colors, currentTab, setRefreshing, masterNotes, setMasterNotes } = useContext(noteContext);
     const [liked, setLiked] = useState(isLiked == 1);
     const isMounted = useRef(false);
     const navigation = useNavigation();
     const route = useRoute();
+    const biometrics = new ReactNativeBiometrics({allowDeviceCredentials: true});
+
+    const handleBiometric = async () => {
+        const { available, biometryType } = await biometrics.isSensorAvailable();
+        console.log(available, biometryType);
+        if(available){
+            const { success, error } = await biometrics.simplePrompt({promptMessage: 'Confirm your identity'});
+            if(success){
+                navigation.navigate("AddNote", { note: note })
+            }
+            else{
+                console.log(error);
+            }
+            
+        }
+    }
+    
+    
+
 
     useEffect(() => {
         if (isMounted.current) {
@@ -116,7 +136,13 @@ const NoteCard = ({
     return (
         <TouchableNativeFeedback
             onPress={() => {
-                navigation.navigate("AddNote", { note: note })
+                if(isLocked==1){
+                    handleBiometric();
+                }
+                else{
+                    navigation.navigate("AddNote", { note: note })
+                }
+                
             }}
             onLongPress={() => {
                 if (route.name === "Home") {
@@ -153,13 +179,23 @@ const NoteCard = ({
                         display: 'flex',
                         flexDirection: 'column',
                     }}>
-                        <Text style={{
-                            fontSize: 18,
-                            fontWeight: '800',
-                            color: "rgba(80, 80, 80, 1)"
+                        <View style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
                         }}>
-                            {category}
-                        </Text>
+                            {
+                                isLocked==1?<AntDesign name="lock" size={20} color="rgba(80, 80, 80, 1)" />:null
+                            }
+                            <Text style={{
+                                fontSize: 18,
+                                marginLeft: 5,
+                                fontWeight: '800',
+                                color: "rgba(80, 80, 80, 1)"
+                            }}>
+                                {category}
+                            </Text>
+                        </View>
                         <Text style={{
                             fontSize: 22,
                             marginTop: 5,
@@ -262,7 +298,7 @@ const NoteCard = ({
                     </View>
                 </View>
             </Animated.View>
-        </TouchableNativeFeedback>
+        </TouchableNativeFeedback >
     )
 }
 

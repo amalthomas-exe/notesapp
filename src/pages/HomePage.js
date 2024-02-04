@@ -3,8 +3,7 @@ import noteContext from "../context/noteContext";
 import { View, Text, ScrollView, TouchableOpacity, FlatList, StatusBar, KeyboardAvoidingView } from 'react-native'
 import Animated, { ColorSpace, LinearTransition, useSharedValue, withTiming } from 'react-native-reanimated';
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import { getDBConnection, getNotes, createTable, createFolderTable, getFolders } from '../services/db-service'
+import { getDBConnection, getNotes, createNotesTable, createFolderTable, getFolders } from '../services/db-service'
 import NavBadge from '../component/NavBagde'
 import NoteCardContainer from '../component/NoteCardContainer';
 import FolderCard from '../component/FolderCard';
@@ -41,8 +40,8 @@ const HomePage = ({ navigation }) => {
         if (currentTab == 0) {
             try {
                 const db = await getDBConnection();
-                await createTable(db, "notes");
-                await createFolderTable(db, "folders");
+                await createNotesTable(db);
+                await createFolderTable(db);
                 const notesFromDB = await getNotes(db, "notes");
                 const foldersFromDB = await getFolders(db, "folders");
                 if (notesFromDB.length) {
