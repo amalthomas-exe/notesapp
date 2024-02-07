@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { View, Text, Button, Touchable, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity } from 'react-native'
 import NoteCardContainer from '../component/NoteCardContainer'
 import noteContext from '../context/noteContext'
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
